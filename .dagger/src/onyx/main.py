@@ -119,7 +119,7 @@ class Onyx:
         backend = self.backend(source, base_image_registry)
         web = self.web(source, base_image_registry)
         model = self.model_server(source, base_image_registry)
-        # Evaluate builds concurrently via sync.
+        # Force evaluation of each image build (CLI would otherwise only print types).
         await backend.sync()
         await web.sync()
         await model.sync()
