@@ -1,0 +1,37 @@
+# Local + TeamCity entrypoints for Coda packaging of the Onyx fork.
+# Dagger module lives in .dagger/ (same engine pin as sip.sail GitOps / EM).
+
+[tools]
+dagger = "0.21.9"
+
+[env]
+DAGGER_NO_UPDATE_CHECK = "1"
+DAGGER_NO_NAG = "1"
+
+[tasks.setup]
+description = "Generate the Dagger Python SDK under .dagger/sdk (requires Docker)"
+run = "dagger develop"
+
+[tasks.lint]
+description = "Assert packaging Dockerfiles exist (Dagger; cheap PR gate)"
+run = "dagger call lint --source=."
+
+[tasks.backend]
+description = "Build onyx-backend image (backend/Dockerfile target runtime)"
+run = "dagger call backend --source=."
+
+[tasks.web]
+description = "Build onyx-web-server image (web/Dockerfile)"
+run = "dagger call web --source=."
+
+[tasks.model-server]
+description = "Build onyx-model-server image (backend/Dockerfile.model_server)"
+run = "dagger call model-server --source=."
+
+[tasks.package]
+description = "Build all three packaging images (backend + web + model-server)"
+run = "dagger call package --source=."
+
+[tasks.ci]
+description = "Full packaging CI gate (alias for package)"
+run = "dagger call ci --source=."
